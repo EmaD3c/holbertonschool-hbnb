@@ -6,21 +6,25 @@ from app.models.place import Place
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repository = SQLAlchemyRepository(User)
-        self.place_repository = SQLAlchemyRepository(Place)
-        self.review_repository = SQLAlchemyRepository(Review)
-        self.amenity_repository = SQLAlchemyRepository(Amenity)
+        class HBnBFacade:
+    def __init__(self):
+        self.user_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
+        self.place_repo = InMemoryRepository()
+        self.review_repo = InMemoryRepository()
 
     def create_user(self, user_data):
         user = User(**user_data)
-        self.user_repository.add(user)
+        self.user_repo.add(user)
         return user
 
-    def get_user_by_id(self, user_id):
-        return self.user_repository.get(user_id)
+    def get_user(self, user_id):
+        user = self.user_repo.get(user_id)
+        print(f"Looking for user with ID {user_id}, found: {user}")
+        return user
 
     def get_all_users(self):
-        return self.user_repository.get_all()
+        return self.user_repo.get_all()
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
