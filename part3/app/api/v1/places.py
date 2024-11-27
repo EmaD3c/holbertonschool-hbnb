@@ -1,7 +1,9 @@
 from flask_restx import Namespace, Resource, fields
-from app.services import facade
+from app.services.facade import HBnBFacade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
+facade = HBnBFacade()
 
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
@@ -31,29 +33,28 @@ class PlaceList(Resource):
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
-        """Register a new place"""
+        """Register a new place for the authenticated user"""
+        current_user = get_jwt_identity()
         place_data = api.payload
-        amenities = place_data['amenities']
-        del place_data['amenities']
+
         try:
             new_place = facade.create_place(place_data)
         except ValueError as e:
             return {"error": str(e)}, 400
-        return { "id": new_place.id, "title": new_place.title, "price": new_place.price, "latitude": new_place.latitude, "longitude": new_place.longitude }, 201
+
+        return {
+            "id": new_place.id,
+            "title": new_place.title,
+            "price": new_place.price,
+            "latitude": new_place.latitude,
+            "longitude": new_place.longitude
+        }, 201
 
     @api.response(200, 'List of places retrieved successfully')
-    def get(self):
-        """Retrieve a list of all places"""
-        places = facade.get_all_places()
-        return [{"id": p.id, "title": p.title, "latitude": p.latitude, "longitude": p.longitude} for p in places], 200
-
-@api.route('/<place_id>')
-class PlaceResource(Resource):
-    @api.response(200, 'Place details retrieved successfully')
-    @api.response(404, 'Place not found')
     def get(self, place_id):
-        """Get place details by ID"""
+        """Retrieve a list of all places"""
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
@@ -73,19 +74,24 @@ class PlaceResource(Resource):
             "amenities": [{"id": a.id, "name": a.name} for a in place.amenities]
         }, 200
 
+@api.route('/<place_id>')
+class PlaceResource(Resource):
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
+    @api.response(403, 'nauthorized action')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
         place_data = api.payload
+
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-
+        
         try:
             updated_place = facade.update_place(place_id, place_data)
         except ValueError as e:
             return {"error": str(e)}, 400
+
         return {"message": "Place updated successfully"}, 200

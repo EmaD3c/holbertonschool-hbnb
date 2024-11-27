@@ -1,7 +1,10 @@
 from flask_restx import Namespace, Resource, fields
-from app.services import facade
+from app.services.facade import HBnBFacade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
+facade = HBnBFacade()
+
 
 # Define the review model for input validation and documentation
 review_model = api.model('Review', {
@@ -13,12 +16,25 @@ review_model = api.model('Review', {
 
 @api.route('/')
 class ReviewList(Resource):
+    @jwt_required()  # Exiger une authentification JWT
     @api.expect(review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new review"""
         review_data = api.payload
+        current_user = get_jwt_identity()  # Obtenir l'identité de l'utilisateur authentifié
+
+        # Vérifiez que l'utilisateur n'essaie pas de revoir un lieu qu'il possède
+        place = facade.get_place(review_data['place_id'])
+        if place.owner_id == current_user:
+            return {"message": "You cannot review your own place"}, 400
+        
+        # Vérifier si l'utilisateur a déjà laissé un avis pour ce lieu
+        existing_review = facade.get_review_by_user_and_place(current_user, review_data['place_id'])
+        if existing_review:
+            return {"message": "You have already reviewed this place"}, 400
+
         try:
             new_review = facade.create_review(review_data)
         except ValueError as e:
@@ -36,6 +52,7 @@ class ReviewResource(Resource):
     @api.response(404, 'Review not found')
     def get(self, review_id):
         """Get review details by ID"""
+        current_user = get_jwt_identity()  # Obtenir l'identité de l'utilisateur authentifié
         obj = facade.get_review(review_id)
         if not obj:
             return {"Error": "Review not found"}, 404
@@ -54,9 +71,14 @@ class ReviewResource(Resource):
     def put(self, review_id):
         """Update a review's information"""
         # Get the review to update
+        current_user = get_jwt_identity()  # Obtenir l'identité de l'utilisateur authentifié
         obj = facade.get_review(review_id)
         if not obj:
             return {"Error": "Review not found"}, 404
+        
+        # Vérifiez si l'utilisateur a créé cet avis
+        if obj.user_id != current_user:
+            return {"Error": "Unauthorized action"}, 403
 
         # Extract updated data from the request payload
         review_data = api.payload

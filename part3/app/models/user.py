@@ -1,14 +1,20 @@
 from .base import BaseModel
 import re
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt()
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False):
+    def __init__(self, first_name, last_name, email, password, owner_id=None, admin=False):
         super().__init__()
+        self.owner_id = owner_id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.is_admin = is_admin
+        self.admin = admin
         self.places = []
+        self.password = None
+        self.hash_password(password)
 
     @property
     def first_name(self):
@@ -50,5 +56,14 @@ class User(BaseModel):
         self._email = value
 
     def add_place(self, place):
-        """Add a place to the user"""
         self.places.append(place)
+
+    def hash_password(self, password):
+        if not password:
+            raise ValueError("Password cannot be empty")
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):
+        if not self.password:
+            raise ValueError("Password hash is missing.")
+        return bcrypt.check_password_hash(self.password, password)
