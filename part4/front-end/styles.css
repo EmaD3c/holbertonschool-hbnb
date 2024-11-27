@@ -30,3 +30,11 @@ nav a {
 main {
   padding: 2rem;
 }
+
+.places-list {
+  margin: 20px;
+}
+
+.review-card {
+  margin: 20px;
+}
