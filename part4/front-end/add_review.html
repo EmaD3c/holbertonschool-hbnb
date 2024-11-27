@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+      <img src="images/logo.png" alt="Application Logo" class="logo" href="index.html">
+      <nav>
+          <a href="index.html">Home</a>
+          <a href="login.html" class="login-button" id="login_button">Login</a>
+      </nav>
+    </header>
+    <main>
+        <!-- Add something to idfentify the place you're reviewing -->
+        <form id="review-form">
+            <h2>Add a Review</h2>
+            <label for="review">Your Review:</label>
+            <textarea id="review" name="review" required></textarea>
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <!-- Options for rating -->
+                <option value="1">★☆☆☆☆ - bad</option>
+                <option value="2">★★☆☆☆ - ok</option>
+                <option value="3">★★★☆☆ - nice</option>
+                <option value="4">★★★★☆ - really good</option>
+                <option value="5">★★★★★ - perfect</option>
+            </select>
+            <button type="submit">Submit Review</button>
+        </form>
+    </main>
+    <footer>
+      <p>Copyright &copy; 2024 all rights reserved</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>

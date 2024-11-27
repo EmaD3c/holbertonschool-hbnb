@@ -1,0 +1,18 @@
+# Flask framework for building web applications
+flask
+
+# Flask-RESTx for building REST APIs
+flask-restx
+
+# Emai-Validator to check Email
+email-validator
+
+# Password management
+flask-bcrypt
+
+# JWT management
+flask-jwt-extended
+
+# ORM
+sqlalchemy
+flask-sqlalchemy
