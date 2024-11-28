@@ -3,6 +3,7 @@
   Please, follow the project instructions to complete the tasks.
 */
 
+// LOGIN
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
@@ -40,3 +41,40 @@ async function loginUser(email, password) {
     alert('Login failed');
   }
 }
+
+document.getElementById('logout-btn').addEventListener('click', logoutUser);
+
+function logoutUser() {
+  // Supprimer le token des cookies
+  document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  
+  // Rediriger vers la page de connexion ou une autre page
+  window.location.href = 'login.html'; // ou 'index.html'
+}
+
+
+// INDEX
+
+function checkAuthentication() {
+  const token = getCookie('token');
+  const loginLink = document.getElementById('login-link');
+
+  if (!token) {
+      loginLink.style.display = 'block';
+  } else {
+      loginLink.style.display = 'none';
+      // Fetch places data if the user is authenticated
+      fetchPlaces(token);
+  }
+}
+function getCookie(name) {
+  // .split(';') divise la chaine en un tableau de cookie individuel
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    // .trim() enleve les espaces inutiles autour du cookie
+      const [key, value] = cookie.trim().split('=');
+      if (key === name) return value;
+  }
+  return null;
+}
+
