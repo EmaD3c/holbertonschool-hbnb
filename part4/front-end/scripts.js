@@ -71,6 +71,11 @@ function checkAuthentication() {
   }
 }
 
+window.addEventListener('load', () => {
+  console.log("xd")
+  checkAuthentication()
+});
+
 function getCookie(name) {
   // .split(';') divise la chaine en un tableau de cookie individuel
   const cookies = document.cookie.split(';');
@@ -82,34 +87,22 @@ function getCookie(name) {
   return null;
 }
 
-window.addEventListener('load', () => {
-  console.log("xd")
-  checkAuthentication()
-});
 
 async function fetchPlaces(token) {
-  try {
-      // requete
-      const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
-          method: 'GET',
-          headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-          }
-      });
-
+  fetch("http://127.0.0.1:5000/api/v1/places/")
+    .then((response) => {
       if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des données');
+        throw new Error("Erreur lors de la récupération des données");
       }
-
-      // Conversion de la réponse en JSON
-      const places = await response.json();
-      // afficher les lieux
-      displayPlaces(places);
-  } catch (error) {
-      console.error('Erreur Fetch:', error.message);
+      return response.json();
+    })
+    .then((data) => {
+      displayPlaces(data);
+    })
+    .catch((error) => {
+      console.error("Erreur :", error);
+    });
   }
-}
 
 function displayPlaces(places) {
   const placesList = document.getElementById('places-list');
@@ -123,7 +116,7 @@ function displayPlaces(places) {
 
     // contenu HTML a inserer dans la carte
     const placeInfo = `
-      <p>${place.name}</p>
+      <p>${place.title}</p>
       <p>Price per night: $${place.price}</p>
       <a href="place.html?id=${place.id}" class="button login_button">View Details</a>
     `;

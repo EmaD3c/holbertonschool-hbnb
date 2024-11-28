@@ -20,7 +20,7 @@ from app.api.v1.admin import api as admin_api
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     api = Api(app, version="1.0", title="HBnB API", description="HBnB Application API")
     api.add_namespace(users_api, path="/api/v1/users")
     api.add_namespace(places_api, path="/api/v1/places")
