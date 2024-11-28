@@ -29,12 +29,14 @@ async function loginUser(email, password) {
     body: JSON.stringify({ email, password }),
   });
 
+  console.log(response)
   // si la reponse a la requete est positive
   if (response.ok) {
     const data = await response.json();
-    const token = data.token;
+    const token = data.access_token;
     // Le token JWT est stocke dans un cookie
     document.cookie = `token=${token}; path=/`;
+    console.log({token})
     // Et l'utilisateur revient à la page d'accueil
     window.location.href = 'index.html';
   } else {
@@ -56,14 +58,15 @@ function logoutUser() {
 // INDEX
 
 function checkAuthentication() {
+  console.log("xdd")
   const token = getCookie('token');
-  const loginLink = document.getElementById('login-link');
+  const loginLink = document.getElementById('login_button');
 
   if (!token) {
       loginLink.style.display = 'block';
   } else {
       loginLink.style.display = 'none';
-      // su l'user est identifier fetch la place
+      // si l'user est identifier fetch la place
       fetchPlaces(token);
   }
 }
@@ -78,6 +81,11 @@ function getCookie(name) {
   }
   return null;
 }
+
+window.addEventListener('load', () => {
+  console.log("xd")
+  checkAuthentication()
+});
 
 async function fetchPlaces(token) {
   try {
@@ -117,7 +125,7 @@ function displayPlaces(places) {
     const placeInfo = `
       <p>${place.name}</p>
       <p>Price per night: $${place.price}</p>
-      <a href="place.html?id=${place.id}" class="button login-button">View Details</a>
+      <a href="place.html?id=${place.id}" class="button login_button">View Details</a>
     `;
     
     placeCard.innerHTML = placeInfo;
