@@ -45,11 +45,11 @@ async function loginUser(email, password) {
 document.getElementById('logout-btn').addEventListener('click', logoutUser);
 
 function logoutUser() {
-  // Supprimer le token des cookies
+  // supprimer le token des cookies
   document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   
-  // Rediriger vers la page de connexion ou une autre page
-  window.location.href = 'login.html'; // ou 'index.html'
+  // rediriger vers la pagae login
+  window.location.href = 'login.html';
 }
 
 
@@ -63,18 +63,66 @@ function checkAuthentication() {
       loginLink.style.display = 'block';
   } else {
       loginLink.style.display = 'none';
-      // Fetch places data if the user is authenticated
+      // su l'user est identifier fetch la place
       fetchPlaces(token);
   }
 }
+
 function getCookie(name) {
   // .split(';') divise la chaine en un tableau de cookie individuel
   const cookies = document.cookie.split(';');
   for (const cookie of cookies) {
-    // .trim() enleve les espaces inutiles autour du cookie
+      // .trim() enleve les espaces inutiles autour du cookie
       const [key, value] = cookie.trim().split('=');
       if (key === name) return value;
   }
   return null;
 }
 
+async function fetchPlaces(token) {
+  try {
+      // requete
+      const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+          }
+      });
+
+      if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données');
+      }
+
+      // Conversion de la réponse en JSON
+      const places = await response.json();
+      // afficher les lieux
+      displayPlaces(places);
+  } catch (error) {
+      console.error('Erreur Fetch:', error.message);
+  }
+}
+
+function displayPlaces(places) {
+  const placesList = document.getElementById('places-list');
+  placesList.innerHTML = ''; // vide la liste des anciennes places
+
+  // pour chaque place ca cree element HTML
+  places.forEach(place => {
+    // carte pour chaque place
+    const placeCard = document.createElement('div');
+    placeCard.classList.add('cards', 'place-card');
+
+    // contenu HTML a inserer dans la carte
+    const placeInfo = `
+      <p>${place.name}</p>
+      <p>Price per night: $${place.price}</p>
+      <a href="place.html?id=${place.id}" class="button login-button">View Details</a>
+    `;
+    
+    placeCard.innerHTML = placeInfo;
+
+    // ajoute la carte au conteneur de la liste
+    placesList.appendChild(placeCard);
+  });
+}
