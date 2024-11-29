@@ -92,7 +92,7 @@ async function fetchPlaces(token) {
   fetch("http://127.0.0.1:5000/api/v1/places/")
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des données");
+        throw new Error("Data recovery error");
       }
       return response.json();
     })
@@ -126,4 +126,35 @@ function displayPlaces(places) {
     // ajoute la carte au conteneur de la liste
     placesList.appendChild(placeCard);
   });
+}
+
+
+// PLACE DETAILS
+
+function getPlaceIdFromURL() {
+  const mySearchParams = new URLSearchParams(window.location.search);
+  return mySearchParams.get('id'); // recuperer la valeur de "id"
+}
+
+
+async function fetchPlaceDetails(token, placeId) {
+  try {
+    const placeId = getPlaceIdFromURL();
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/places/${placeId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const place = await response.json();
+      displayPlaceDetails(place);
+    } else {
+      console.error('Error when retrieving place details');
+    }
+  } catch (error) {
+    console.error('Error :', error);
+  }
 }
