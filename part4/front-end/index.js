@@ -58,6 +58,6 @@ function filterplaces(event) {
   // deux argument different 
   const value = event.target.value;
   console.log(value)
-  const filtered_places = places.filter(place => place.price <= value || value === 0)
+  const filtered_places = places.filter(place => place.price <= value || value == 0)
   displayPlaces(filtered_places);
 }
