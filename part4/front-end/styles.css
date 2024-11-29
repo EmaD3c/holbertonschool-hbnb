@@ -1,46 +1,125 @@
-/* 
-  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks. 
-  You'll probably need to override some of theese styles.
-*/
-
-* {
-  box-sizing: border-box;
+/* styles principaux */
+body {
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: #ffffff; /* Fond blanc */
+  color: #000000; /* Texte noir */
 }
 
 header {
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #806886;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-nav a {
+header .logo {
+  height: 50px;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+}
+
+header nav a {
   color: #fff;
   text-decoration: none;
-  margin-left: 1rem;
+  margin: 0 10px;
+  font-weight: bold;
 }
 
+header nav a:hover {
+  text-decoration: underline;
+}
+
+header #logout-btn {
+  background-color: #fff;
+  color: #806886;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+header #logout-btn:hover {
+  background-color: #a5b1d9;
+}
+
+/* section principale */
 main {
-  padding: 2rem;
+  padding: 20px;
+  text-align: center;
 }
 
-.places-list {
-  margin: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+#filter {
+  margin-bottom: 20px;
 }
 
-.review-card {
+#filter label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #806886;
+}
+
+#filter select {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #806886;
+  border-radius: 5px;
+  color: #333;
+}
+
+/* Liste des places */
+#places-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.place-card {
+  background-color: #f8f8f8;
+  color: #000000;
+  border: 1px solid #806886;
+  border-radius: 10px;
   margin: 20px;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.place-card p {
+  margin: 5px 0;
+}
+
+.place-card .button {
+  display: block;
+  background-color: #806886;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.place-card .button:hover {
+  background-color: #a5b1d9;
+}
+
+/* footer */
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #806886;
+  color: #fff;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
